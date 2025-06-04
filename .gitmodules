@@ -1,0 +1,3 @@
+[submodule "deps/hiberlite"]
+	path = deps/hiberlite
+	url = https://github.com/paulftw/hiberlite
