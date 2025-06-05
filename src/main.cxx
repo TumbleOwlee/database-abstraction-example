@@ -7,7 +7,7 @@ using namespace persistence;
 int main(int, char **) {
     std::cerr << "Running..." << std::endl;
 
-    Database<persistence::hiberlite::Storage> database("db.sqlite");
+    Database database = Database::create<persistence::hiberlite::Storage>("db.sqlite");
 
     auto userTable = database.get<storage::IUserStorage>();
     userTable->persistUser(User());
