@@ -1,10 +1,17 @@
+#include <hiberlite.h>
+
 #include "database/Database.h"
 #include "database/hiberlite/Storage.h"
-#include <hiberlite.h>
+
+auto assert(bool cmp) -> void {
+    if (!cmp) {
+        abort();
+    }
+}
 
 using namespace persistence;
 using namespace persistence::model;
-using namespace persistence::storage;
+using namespace persistence::interface;
 
 int main(int, char **) {
     std::cerr << "Running..." << std::endl;
@@ -14,7 +21,10 @@ int main(int, char **) {
     /* Non-transaction persist */
     {
         auto userStorage = database.get<IUserStorage>();
-        userStorage->persist(User());
+        auto id = userStorage->persist(User{"Max Mustermann", 21});
+
+        auto user = userStorage->load(id);
+        assert(user.name == "Max Mustermann" && user.age == 21);
 
         auto gpioStorage = database.get<IGpioStorage>();
         gpioStorage->persist(Gpio());
