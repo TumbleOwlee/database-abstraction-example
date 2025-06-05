@@ -9,11 +9,13 @@ namespace persistence {
 
 namespace hiberlite {
 
-class GpioStorage : public virtual persistence::storage::IGpioStorage {
+class GpioStorage : virtual public persistence::storage::IGpioStorage {
 public:
     GpioStorage(::hiberlite::Database &database) : _database(database) {}
 
-    auto persistGpio(Gpio const &gpio) -> void override { std::cerr << "Persisting gpio..." << std::endl; }
+    auto persist(persistence::model::Gpio const &gpio) -> void override {
+        std::cerr << "Persisting gpio..." << std::endl;
+    }
 
 private:
     ::hiberlite::Database &_database;

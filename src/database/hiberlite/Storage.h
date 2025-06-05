@@ -9,10 +9,10 @@ namespace persistence {
 
 namespace hiberlite {
 
-class Storage : public virtual persistence::storage::IStorage,
-                public persistence::hiberlite::UserStorage,
-                public persistence::hiberlite::LogStorage,
-                public persistence::hiberlite::GpioStorage {
+class Storage : virtual public persistence::storage::IStorage,
+                virtual public persistence::hiberlite::UserStorage,
+                virtual public persistence::hiberlite::LogStorage,
+                virtual public persistence::hiberlite::GpioStorage {
 public:
     Storage(std::string const &path)
         : persistence::hiberlite::UserStorage(_database), persistence::hiberlite::LogStorage(_database),

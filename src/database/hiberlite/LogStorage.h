@@ -9,11 +9,11 @@ namespace persistence {
 
 namespace hiberlite {
 
-class LogStorage : public virtual persistence::storage::ILogStorage {
+class LogStorage : virtual public persistence::storage::ILogStorage {
 public:
     LogStorage(::hiberlite::Database &database) : _database(database) {}
 
-    auto persistLog(Log const &log) -> void override { std::cerr << "Persisting log..." << std::endl; }
+    auto persist(persistence::model::Log const &log) -> void override { std::cerr << "Persisting log..." << std::endl; }
 
 private:
     ::hiberlite::Database &_database;

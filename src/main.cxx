@@ -3,20 +3,22 @@
 #include <hiberlite.h>
 
 using namespace persistence;
+using namespace persistence::model;
+using namespace persistence::storage;
 
 int main(int, char **) {
     std::cerr << "Running..." << std::endl;
 
     Database database = Database::create<persistence::hiberlite::Storage>("db.sqlite");
 
-    auto userTable = database.get<storage::IUserStorage>();
-    userTable->persistUser(User());
+    auto userStorage = database.get<IUserStorage>();
+    userStorage->persist(User());
 
-    auto gpioTable = database.get<storage::IGpioStorage>();
-    gpioTable->persistGpio(Gpio());
+    auto gpioStorage = database.get<IGpioStorage>();
+    gpioStorage->persist(Gpio());
 
-    auto logTable = database.get<storage::ILogStorage>();
-    logTable->persistLog(Log());
+    auto logStorage = database.get<ILogStorage>();
+    logStorage->persist(Log());
 
     std::cerr << "...Stopped" << std::endl;
     return 0;

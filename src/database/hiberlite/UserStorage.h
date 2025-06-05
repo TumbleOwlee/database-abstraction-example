@@ -9,11 +9,13 @@ namespace persistence {
 
 namespace hiberlite {
 
-class UserStorage : public virtual persistence::storage::IUserStorage {
+class UserStorage : virtual public persistence::storage::IUserStorage {
 public:
     UserStorage(::hiberlite::Database &database) : _database(database) {}
 
-    auto persistUser(User const &user) -> void override { std::cerr << "Persisting user..." << std::endl; }
+    auto persist(persistence::model::User const &user) -> void override {
+        std::cerr << "Persisting user..." << std::endl;
+    }
 
 private:
     ::hiberlite::Database &_database;
