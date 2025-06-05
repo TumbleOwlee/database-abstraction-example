@@ -23,7 +23,7 @@ public:
     virtual auto persist(persistence::model::Gpio const &gpio) -> void = 0;
 };
 
-class IStorage : public virtual IUserStorage, public virtual IGpioStorage, public virtual ILogStorage {};
+class IStorage : virtual public IUserStorage, virtual public IGpioStorage, virtual public ILogStorage {};
 
 } // namespace storage
 
