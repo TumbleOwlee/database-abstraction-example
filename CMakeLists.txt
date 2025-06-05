@@ -8,6 +8,7 @@ project(database-abstraction-example
     LANGUAGES C CXX)
 
 # Export compile commands
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CXX_STANDARD 17)
 set(CXX_STANDARD_REQUIRED ON)

@@ -11,14 +11,43 @@ int main(int, char **) {
 
     Database database = Database::create<persistence::hiberlite::Storage>("db.sqlite");
 
-    auto userStorage = database.get<IUserStorage>();
-    userStorage->persist(User());
+    /* Non-transaction persist */
+    {
+        auto userStorage = database.get<IUserStorage>();
+        userStorage->persist(User());
 
-    auto gpioStorage = database.get<IGpioStorage>();
-    gpioStorage->persist(Gpio());
+        auto gpioStorage = database.get<IGpioStorage>();
+        gpioStorage->persist(Gpio());
 
-    auto logStorage = database.get<ILogStorage>();
-    logStorage->persist(Log());
+        auto logStorage = database.get<ILogStorage>();
+        logStorage->persist(Log());
+    }
+
+    /* Perform transaction to persist */
+    {
+        auto transaction = database.newTransaction();
+
+        auto userStorage = transaction->get<IUserStorage>();
+        userStorage->persist(User());
+
+        auto logStorage = transaction->get<ILogStorage>();
+        logStorage->persist(Log());
+
+        transaction->submit();
+    }
+
+    /* Drop transaction */
+    {
+        auto transaction = database.newTransaction();
+
+        auto userStorage = transaction->get<IUserStorage>();
+        userStorage->persist(User());
+
+        auto logStorage = transaction->get<ILogStorage>();
+        logStorage->persist(Log());
+
+        /* Transaction is dropped and not applied when moving out of scope */
+    }
 
     std::cerr << "...Stopped" << std::endl;
     return 0;
