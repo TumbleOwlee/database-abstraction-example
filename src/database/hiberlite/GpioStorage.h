@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../interfaces/IGpioStorage.h"
-#include "../interfaces/IKey.h"
+#include "../interfaces/GpioStorage.h"
+#include "../interfaces/Key.h"
 #include "../model/Gpio.h"
 
 #include <hiberlite.h>

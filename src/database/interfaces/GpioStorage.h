@@ -2,7 +2,7 @@
 
 #include "../model/Gpio.h"
 
-#include "IKey.h"
+#include "Key.h"
 
 #include <memory>
 

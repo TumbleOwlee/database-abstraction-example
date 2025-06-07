@@ -2,7 +2,7 @@
 
 #include <hiberlite.h>
 
-#include "../interfaces/IKey.h"
+#include "../interfaces/Key.h"
 
 namespace persistence {
 

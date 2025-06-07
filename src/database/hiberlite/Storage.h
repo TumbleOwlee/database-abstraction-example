@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../interfaces/ITransaction.h"
+#include "../interfaces/Transaction.h"
 #include "GpioStorage.h"
 #include "LogStorage.h"
 #include "UserStorage.h"

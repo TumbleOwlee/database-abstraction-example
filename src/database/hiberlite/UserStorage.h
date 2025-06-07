@@ -2,7 +2,7 @@
 
 #include "Key.h"
 
-#include "../interfaces/IUserStorage.h"
+#include "../interfaces/UserStorage.h"
 #include "../model/User.h"
 
 #include <hiberdefs.h>

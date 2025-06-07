@@ -1,7 +1,7 @@
 #pragma once
 
-#include "interfaces/IStorage.h"
-#include "interfaces/ITransaction.h"
+#include "interfaces/Storage.h"
+#include "interfaces/Transaction.h"
 
 #include <functional>
 #include <memory>

@@ -1,8 +1,7 @@
 #pragma once
 
 #include "../model/Log.h"
-
-#include "IKey.h"
+#include "Key.h"
 
 #include <memory>
 

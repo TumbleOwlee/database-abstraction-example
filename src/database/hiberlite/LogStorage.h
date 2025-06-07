@@ -2,7 +2,7 @@
 
 #include "Key.h"
 
-#include "../interfaces/ILogStorage.h"
+#include "../interfaces/LogStorage.h"
 #include "../model/Log.h"
 
 #include <hiberdefs.h>

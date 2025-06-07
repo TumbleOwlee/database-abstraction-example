@@ -1,8 +1,8 @@
 #pragma once
 
-#include "IGpioStorage.h"
-#include "ILogStorage.h"
-#include "IUserStorage.h"
+#include "GpioStorage.h"
+#include "LogStorage.h"
+#include "UserStorage.h"
 
 namespace persistence {
 
