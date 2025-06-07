@@ -12,14 +12,14 @@ namespace interface {
 /**!
  * \brief Basic interface for a database transaction
  */
-class ITransaction {
+class Transaction {
 public:
     /**!
      * \brief Initialize new transaction
      *
      * \param storage  Handle to underlying storage
      */
-    ITransaction(std::shared_ptr<IStorage> storage) : _storage(storage) {}
+    Transaction(std::shared_ptr<Storage> storage) : _storage(storage) {}
 
     /**!
      * \brief Return access view to the underlying storage
@@ -36,7 +36,7 @@ public:
     /**!
      * \brief Destructor
      */
-    virtual ~ITransaction() {}
+    virtual ~Transaction() {}
 
     /**!
      * \brief Submit the transaction
@@ -46,7 +46,7 @@ public:
     virtual auto submit() -> void = 0;
 
 protected:
-    std::shared_ptr<IStorage> _storage;
+    std::shared_ptr<Storage> _storage;
 };
 
 } // namespace interface
@@ -56,7 +56,7 @@ namespace defaults {
 /**!
  * \brief Transaction handling for hiberlite backend
  */
-class Transaction final : public persistence::interface::ITransaction {
+class Transaction final : public ::persistence::interface::Transaction {
 public:
     /**!
      * \brief Create/Start new transaction
@@ -65,7 +65,7 @@ public:
      *
      * \return Interface handle to the transaction
      */
-    Transaction(std::shared_ptr<interface::IStorage> storage) : persistence::interface::ITransaction(storage) {
+    Transaction(std::shared_ptr<interface::Storage> storage) : ::persistence::interface::Transaction(storage) {
         LOG() << "Create transaction" << std::endl;
         _storage->startTransaction();
     }

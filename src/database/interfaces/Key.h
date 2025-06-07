@@ -7,9 +7,9 @@ namespace interface {
 /**!
  * \brief Interface representing the key handle to an object stored in the database
  */
-class IKey {
+class Key {
 public:
-    virtual ~IKey() {}
+    virtual ~Key() {}
 };
 
 } // namespace interface

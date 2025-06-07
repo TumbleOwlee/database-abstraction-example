@@ -16,10 +16,10 @@ namespace hiberlite {
 /**!
  * \brief Storage implementation for hiberlite backend
  */
-class Storage final : virtual public persistence::interface::IStorage,
-                      virtual public persistence::hiberlite::UserStorage,
-                      virtual public persistence::hiberlite::LogStorage,
-                      virtual public persistence::hiberlite::GpioStorage {
+class Storage final : virtual public ::persistence::interface::Storage,
+                      virtual public ::persistence::hiberlite::UserStorage,
+                      virtual public ::persistence::hiberlite::LogStorage,
+                      virtual public ::persistence::hiberlite::GpioStorage {
 public:
     /**!
      * \brief Transaction instance type
@@ -27,7 +27,7 @@ public:
      * \details You can specify a custom transaction type if necessary. If no special handling is necessary
      *          you can skip the implementation of your own type and simply use the provided default implementation
      *          of the interface. The default utilizes the implementation of `startTransaction()`, `submitTransaction()`
-     *          and `rollbackTransaction()` of the IStorage interface.
+     *          and `rollbackTransaction()` of ::persistence::interfaces::Storage.
      */
     using Transaction = ::persistence::defaults::Transaction;
 
@@ -37,8 +37,8 @@ public:
      * \param path  Path to the database file
      */
     Storage(std::string const &path)
-        : persistence::hiberlite::UserStorage(_database), persistence::hiberlite::LogStorage(_database),
-          persistence::hiberlite::GpioStorage(_database) {
+        : ::persistence::hiberlite::UserStorage(_database), ::persistence::hiberlite::LogStorage(_database),
+          ::persistence::hiberlite::GpioStorage(_database) {
         LOG() << "Create model..." << std::endl;
         _database.open(path);
         _database.registerBeanClass<::persistence::hiberlite::User>();

@@ -22,7 +22,7 @@ namespace hiberlite {
  *         it by providing the necessary implementation of methods required
  *         by the underlying backend (hiberlite)
  */
-class User : public persistence::model::User {
+class User : public ::persistence::model::User {
 private:
     friend class ::hiberlite::access;
 
@@ -39,7 +39,7 @@ public:
     /**!
      * \brief Consturctor
      */
-    User() : persistence::model::User() {}
+    User() : ::persistence::model::User() {}
 
     /**!
      * \brief Consturctor
@@ -48,13 +48,13 @@ public:
      *
      * \param user The user as given by the model
      */
-    User(persistence::model::User &&user) : persistence::model::User(user) {}
+    User(::persistence::model::User &&user) : ::persistence::model::User(user) {}
 };
 
 /**!
  * \brief UserStorage providing the user specific database operations
  */
-class UserStorage : virtual public persistence::interface::IUserStorage {
+class UserStorage : virtual public ::persistence::interface::UserStorage {
 public:
     /**!
      * \brief Create a user storage view
@@ -70,11 +70,11 @@ public:
      *
      * \return Key handle representing the stored user
      */
-    auto persist(persistence::model::User &&user) -> std::shared_ptr<persistence::interface::IKey> override {
+    auto persist(::persistence::model::User &&user) -> std::shared_ptr<::persistence::interface::Key> override {
         LOG() << "Persisting user... ";
         auto bean = _database.copyBean(User(std::move(user)));
         LOG() << bean.get_id() << std::endl;
-        return std::make_shared<persistence::hiberlite::Key>(bean.get_id());
+        return std::make_shared<::persistence::hiberlite::Key>(bean.get_id());
     }
 
     /**!
@@ -86,15 +86,15 @@ public:
      *
      * \return The loaded user
      */
-    auto load(std::shared_ptr<persistence::interface::IKey> id) -> persistence::model::User override {
-        auto ptr = dynamic_cast<persistence::hiberlite::Key *>(id.get());
+    auto load(std::shared_ptr<::persistence::interface::Key> id) -> ::persistence::model::User override {
+        auto ptr = dynamic_cast<::persistence::hiberlite::Key *>(id.get());
         if (ptr == nullptr) {
             throw std::invalid_argument("Provided pointer isn't valid key.");
         }
         auto sqlid = ptr->get();
         LOG() << "Load user " << sqlid << "..." << std::endl;
         auto user = _database.loadBean<User>(sqlid);
-        return persistence::model::User(*user.get_object()->get());
+        return ::persistence::model::User(*user.get_object()->get());
     }
 
 private:

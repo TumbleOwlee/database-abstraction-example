@@ -11,12 +11,14 @@ namespace interface {
 /**!
  * \brief Interface combination of all sub-views
  */
-class IStorage : virtual public IUserStorage, virtual public IGpioStorage, virtual public ILogStorage {
+class Storage : virtual public ::persistence::interface::UserStorage,
+                virtual public ::persistence::interface::GpioStorage,
+                virtual public ::persistence::interface::LogStorage {
 public:
     /**!
      * \brief Destructor
      */
-    virtual ~IStorage() {}
+    virtual ~Storage() {}
 
     virtual auto startTransaction() -> void = 0;
     virtual auto commitTransaction() -> void = 0;

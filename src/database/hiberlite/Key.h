@@ -11,7 +11,7 @@ namespace hiberlite {
 /**!
  * \brief Hiberlite object key definition
  */
-class Key : public persistence::interface::IKey {
+class Key : public ::persistence::interface::Key {
 public:
     /**!
      * \brief Creates a key represented by the hiberlite id

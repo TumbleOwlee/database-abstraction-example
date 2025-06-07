@@ -22,7 +22,7 @@ namespace hiberlite {
  *         it by providing the necessary implementation of methods required
  *         by the underlying backend (hiberlite)
  */
-class Log : public persistence::model::Log {
+class Log : public ::persistence::model::Log {
 private:
     friend class ::hiberlite::access;
 
@@ -38,7 +38,7 @@ public:
     /**!
      * \brief Consturctor
      */
-    Log() : persistence::model::Log() {}
+    Log() : ::persistence::model::Log() {}
 
     /**!
      * \brief Consturctor
@@ -47,13 +47,13 @@ public:
      *
      * \param log The log as given by the model
      */
-    Log(persistence::model::Log &&log) : persistence::model::Log(log) {}
+    Log(::persistence::model::Log &&log) : ::persistence::model::Log(log) {}
 };
 
 /**!
  * \brief LogStorage providing the log specific database operations
  */
-class LogStorage : virtual public persistence::interface::ILogStorage {
+class LogStorage : virtual public ::persistence::interface::LogStorage {
 public:
     /**!
      * \brief Create a log storage view
@@ -69,11 +69,11 @@ public:
      *
      * \return Key handle representing the stored log
      */
-    auto persist(persistence::model::Log &&log) -> std::shared_ptr<persistence::interface::IKey> override {
+    auto persist(::persistence::model::Log &&log) -> std::shared_ptr<::persistence::interface::Key> override {
         auto bean = _database.copyBean(Log(std::move(log)));
         LOG() << "Persisting log...";
         LOG() << bean.get_id() << std::endl;
-        return std::make_shared<persistence::hiberlite::Key>(bean.get_id());
+        return std::make_shared<::persistence::hiberlite::Key>(bean.get_id());
     }
 
     /**!
@@ -85,15 +85,15 @@ public:
      *
      * \return The loaded log
      */
-    auto load(std::shared_ptr<persistence::interface::IKey> id) -> persistence::model::Log override {
-        auto ptr = dynamic_cast<persistence::hiberlite::Key *>(id.get());
+    auto load(std::shared_ptr<::persistence::interface::Key> id) -> ::persistence::model::Log override {
+        auto ptr = dynamic_cast<::persistence::hiberlite::Key *>(id.get());
         if (ptr == nullptr) {
             throw std::invalid_argument("Provided pointer isn't valid key.");
         }
         auto sqlid = ptr->get();
         LOG() << "Load log " << sqlid << "..." << std::endl;
         auto log = _database.loadBean<Log>(sqlid);
-        return persistence::model::Log(*log.get_object()->get());
+        return ::persistence::model::Log(*log.get_object()->get());
     }
 
 private:

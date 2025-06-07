@@ -12,7 +12,7 @@ namespace interface {
 /**!
  * \brief Interface representing the log specific view on the storage
  */
-class ILogStorage {
+class LogStorage {
 public:
     /**!
      * \brief Persist a log
@@ -21,7 +21,7 @@ public:
      *
      * \return The key handle associated with the stored log
      */
-    virtual auto persist(persistence::model::Log &&log) -> std::shared_ptr<persistence::interface::IKey> = 0;
+    virtual auto persist(::persistence::model::Log &&log) -> std::shared_ptr<::persistence::interface::Key> = 0;
 
     /**!
      * \brief Load a log by its key id
@@ -30,7 +30,7 @@ public:
      *
      * \return The log associated with the given id
      */
-    virtual auto load(std::shared_ptr<persistence::interface::IKey> id) -> persistence::model::Log = 0;
+    virtual auto load(std::shared_ptr<::persistence::interface::Key> id) -> ::persistence::model::Log = 0;
 };
 
 } // namespace interface

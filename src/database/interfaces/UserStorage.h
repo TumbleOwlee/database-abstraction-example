@@ -12,7 +12,7 @@ namespace interface {
 /**!
  * \brief Interface representing the user specific view on the storage
  */
-class IUserStorage {
+class UserStorage {
 public:
     /**!
      * \brief Persist a user
@@ -21,7 +21,7 @@ public:
      *
      * \return The key handle associated with the stored user
      */
-    virtual auto persist(persistence::model::User &&user) -> std::shared_ptr<persistence::interface::IKey> = 0;
+    virtual auto persist(::persistence::model::User &&user) -> std::shared_ptr<::persistence::interface::Key> = 0;
 
     /**!
      * \brief Load a user by its key id
@@ -30,7 +30,7 @@ public:
      *
      * \return The user associated with the given id
      */
-    virtual auto load(std::shared_ptr<persistence::interface::IKey> id) -> persistence::model::User = 0;
+    virtual auto load(std::shared_ptr<::persistence::interface::Key> id) -> ::persistence::model::User = 0;
 };
 
 } // namespace interface
