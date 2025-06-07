@@ -17,6 +17,10 @@ public:
      * \brief Destructor
      */
     virtual ~IStorage() {}
+
+    virtual auto startTransaction() -> void = 0;
+    virtual auto commitTransaction() -> void = 0;
+    virtual auto rollbackTransaction() -> void = 0;
 };
 
 } // namespace interface

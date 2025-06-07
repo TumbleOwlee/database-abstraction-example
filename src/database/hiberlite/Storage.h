@@ -34,6 +34,7 @@ public:
          */
         Transaction(std::shared_ptr<interface::IStorage> storage) : persistence::interface::ITransaction(storage) {
             std::cerr << "Create transaction" << std::endl;
+            _storage->startTransaction();
         }
 
         /**!
@@ -42,6 +43,7 @@ public:
         ~Transaction() override {
             if (!submitted) {
                 std::cerr << "Cancel transaction" << std::endl;
+                _storage->rollbackTransaction();
             }
         }
 
@@ -56,6 +58,7 @@ public:
             }
 
             submitted = true;
+            _storage->commitTransaction();
             std::cerr << "Submit transaction" << std::endl;
         }
 
@@ -85,6 +88,10 @@ public:
      * \brief Destructor that closes the database
      */
     ~Storage() override { _database.close(); }
+
+    auto startTransaction() -> void override { _database.startTransaction(); }
+    auto commitTransaction() -> void override { _database.commitTransaction(); }
+    auto rollbackTransaction() -> void override { _database.rollbackTransaction(); }
 
 private:
     ::hiberlite::Database _database;
