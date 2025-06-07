@@ -1,5 +1,3 @@
-#include <hiberlite.h>
-
 #include "database/Database.h"
 #include "database/hiberlite/Storage.h"
 
