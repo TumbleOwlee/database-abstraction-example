@@ -11,18 +11,18 @@ The repository currently only contains the necessary implementation of the inter
 As you can see in the following example, only the single included header file and the call to `Database::create<T>(..)` contain references to the actual used storage library (in this case hiberlite). All other calls only act on interfaces. Thus, changing the underlying storage library only require a change to the two lines while not affecting all other application code. Please refer to the implementation in `src/database/hiberlite` for an example of the interface implementations to support the use of hiberlite as the storage library.
 
 ```c++
-#include "database/Database.h"
-#include "database/hiberlite/Storage.h"
+#include "dal/Database.h"
+#include "hiberlite/Storage.h"
 
-using namespace ::persistence;
-using namespace ::persistence::common;
-using namespace ::persistence::model;
-using namespace ::persistence::interface;
+using namespace ::dal;
+using namespace ::dal::common;
+using namespace ::dal::model;
+using namespace ::dal::interface;
 
 int main(int, char **) {
     std::cerr << ">> Running..." << std::endl;
 
-    Database database = Database::create<::persistence::hiberlite::Storage>("db.sqlite");
+    Database database = Database::create<::dal::drivers::hiberlite::Storage>("db.sqlite");
 
     /* Non-transaction persist */
     {
