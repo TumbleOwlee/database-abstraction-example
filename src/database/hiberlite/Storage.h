@@ -8,6 +8,8 @@
 #include <memory>
 #include <string>
 
+#include "../common.h"
+
 namespace persistence {
 
 namespace hiberlite {
@@ -33,7 +35,7 @@ public:
          * \return Interface handle to the transaction
          */
         Transaction(std::shared_ptr<interface::IStorage> storage) : persistence::interface::ITransaction(storage) {
-            std::cerr << "Create transaction" << std::endl;
+            LOG() << "Create transaction" << std::endl;
             _storage->startTransaction();
         }
 
@@ -42,7 +44,7 @@ public:
          */
         ~Transaction() override {
             if (!submitted) {
-                std::cerr << "Cancel transaction" << std::endl;
+                LOG() << "Cancel transaction" << std::endl;
                 _storage->rollbackTransaction();
             }
         }
@@ -59,7 +61,7 @@ public:
 
             submitted = true;
             _storage->commitTransaction();
-            std::cerr << "Submit transaction" << std::endl;
+            LOG() << "Submit transaction" << std::endl;
         }
 
     private:
@@ -74,13 +76,15 @@ public:
     Storage(std::string const &path)
         : persistence::hiberlite::UserStorage(_database), persistence::hiberlite::LogStorage(_database),
           persistence::hiberlite::GpioStorage(_database) {
-        std::cerr << "Create model..." << std::endl;
+        LOG() << "Create model..." << std::endl;
         _database.open(path);
         _database.registerBeanClass<::persistence::hiberlite::User>();
+        _database.registerBeanClass<::persistence::hiberlite::Log>();
+        _database.registerBeanClass<::persistence::hiberlite::Gpio>();
         try {
             _database.createModel();
         } catch (::hiberlite::database_error &e) {
-            std::cerr << "Model already exists. Skip 'CREATE TABLE'." << std::endl;
+            LOG() << "Model already exists. Skip 'CREATE TABLE'." << std::endl;
         }
     }
 

@@ -9,6 +9,8 @@
 #include <hiberlite.h>
 #include <iostream>
 
+#include "../common.h"
+
 namespace persistence {
 
 namespace hiberlite {
@@ -69,9 +71,9 @@ public:
      * \return Key handle representing the stored user
      */
     auto persist(persistence::model::User &&user) -> std::shared_ptr<persistence::interface::IKey> override {
-        std::cerr << "Persisting user... ";
+        LOG() << "Persisting user... ";
         auto bean = _database.copyBean(User(std::move(user)));
-        std::cerr << bean.get_id() << std::endl;
+        LOG() << bean.get_id() << std::endl;
         return std::make_shared<persistence::hiberlite::Key>(bean.get_id());
     }
 
@@ -90,7 +92,7 @@ public:
             throw std::invalid_argument("Provided pointer isn't valid key.");
         }
         auto sqlid = ptr->get();
-        std::cerr << "Load user " << sqlid << "..." << std::endl;
+        LOG() << "Load user " << sqlid << "..." << std::endl;
         auto user = _database.loadBean<User>(sqlid);
         return persistence::model::User(*user.get_object()->get());
     }
@@ -109,6 +111,7 @@ namespace hiberlite {
  * \brief Hiberlite specific functionality required to be able to store users
  */
 template <>
+// NOLINTNEXTLINE
 std::string Database::getClassName<persistence::hiberlite::User>() {
     std::string temp("User");
     std::replace(temp.begin(), temp.end(), ':', '_');

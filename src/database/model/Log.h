@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace persistence {
 
 namespace model {
@@ -7,7 +9,10 @@ namespace model {
 /**!
  * \brief Simple Log definition
  */
-class Log {};
+class Log {
+public:
+    std::string timestamp;
+};
 
 } // namespace model
 

@@ -3,62 +3,84 @@
 #include "database/Database.h"
 #include "database/hiberlite/Storage.h"
 
-auto assert(bool cmp) -> void {
-    if (!cmp) {
-        abort();
-    }
-}
-
 using namespace persistence;
+using namespace persistence::common;
 using namespace persistence::model;
 using namespace persistence::interface;
 
 int main(int, char **) {
-    std::cerr << "Running..." << std::endl;
+    std::cerr << ">> Running..." << std::endl;
 
     Database database = Database::create<persistence::hiberlite::Storage>("db.sqlite");
 
     /* Non-transaction persist */
     {
-        auto userStorage = database.get<IUserStorage>();
-        auto id = userStorage->persist(User{"Max Mustermann", 21});
+        std::cerr << ">> Perform non-transaction persist/load .." << std::endl;
 
-        auto user = userStorage->load(id);
-        assert(user.name == "Max Mustermann" && user.age == 21);
+        auto userStorage = database.get<IUserStorage>();
+        auto userId = userStorage->persist(User{"John Doe", 21});
+
+        auto user = userStorage->load(userId);
+        assert(user.name == "John Doe" && user.age == 21);
 
         auto gpioStorage = database.get<IGpioStorage>();
-        gpioStorage->persist(Gpio());
+        auto gpioId = gpioStorage->persist(Gpio{1});
+
+        auto gpio = gpioStorage->load(gpioId);
+        assert(gpio.line == 1);
 
         auto logStorage = database.get<ILogStorage>();
-        logStorage->persist(Log());
-    }
+        auto logId = logStorage->persist(Log{"Aug Fri 2025-03-12 11:21:00+02:00"});
 
-    /* Perform transaction to persist */
-    {
-        auto transaction = database.newTransaction();
-
-        auto userStorage = transaction->get<IUserStorage>();
-        userStorage->persist(User());
-
-        auto logStorage = transaction->get<ILogStorage>();
-        logStorage->persist(Log());
-
-        transaction->submit();
+        auto log = logStorage->load(logId);
+        assert(log.timestamp == "Aug Fri 2025-03-12 11:21:00+02:00");
     }
 
     /* Drop transaction */
     {
+        std::cerr << ">> Drop transaction .." << std::endl;
+
         auto transaction = database.newTransaction();
 
         auto userStorage = transaction->get<IUserStorage>();
-        userStorage->persist(User());
+        userStorage->persist(User{"John Doene", 33});
+
+        auto gpioStorage = database.get<IGpioStorage>();
+        auto gpioId = gpioStorage->persist(Gpio{2});
 
         auto logStorage = transaction->get<ILogStorage>();
-        logStorage->persist(Log());
+        logStorage->persist(Log{"Sep Tue 2024-08-21 17:24:34+02:00"});
 
         /* Transaction is dropped and not applied when moving out of scope */
     }
 
-    std::cerr << "...Stopped" << std::endl;
+    /* Perform transaction to persist */
+    {
+        std::cerr << ">> Submit transaction .." << std::endl;
+
+        auto transaction = database.newTransaction();
+
+        auto userStorage = database.get<IUserStorage>();
+        auto userId = userStorage->persist(User{"Jane Doe", 25});
+
+        auto gpioStorage = database.get<IGpioStorage>();
+        auto gpioId = gpioStorage->persist(Gpio{3});
+
+        auto logStorage = database.get<ILogStorage>();
+        auto logId = logStorage->persist(Log{"Aug Fri 2025-04-02 12:30:00+02:00"});
+
+        transaction->submit();
+
+        auto user = userStorage->load(userId);
+        assert(user.name == "Jane Doe" && user.age == 25);
+
+        auto gpio = gpioStorage->load(gpioId);
+        assert(gpio.line == 3);
+
+        auto log = logStorage->load(logId);
+        assert(log.timestamp == "Aug Fri 2025-04-02 12:30:00+02:00");
+    }
+
+    std::cerr << ">> Stopped" << std::endl;
     return 0;
 }
