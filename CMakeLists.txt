@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.20..4.0)
 
 # Define project
-project(database-abstraction-example
+project(dal-cxx
     VERSION 0.0.1
     DESCRIPTION "Simplistic database abstraction example."
     LANGUAGES C CXX)
@@ -24,20 +24,25 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
     add_definitions(-DDEBUG)
 endif()
 
+# Add external dependencies
 add_subdirectory("deps/hiberlite")
 
+# Set up library
+add_library(${PROJECT_NAME} INTERFACE)
+target_include_directories(${PROJECT_NAME} INTERFACE
+    ${CMAKE_CURRENT_SOURCE_DIR}/deps/hiberlite/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
 # Collect all source files
-set (SRC_FILES "src/main.cxx")
+set (SRC_FILES "test/main.cxx")
+set (PROJECT_NAME_TEST "${PROJECT_NAME}-test")
 
 # Create executable
-add_executable(${PROJECT_NAME} ${SRC_FILES})
-target_include_directories(${PROJECT_NAME} PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/src
-    ${CMAKE_CURRENT_SOURCE_DIR}/deps/hiberlite/include
-)
-target_link_libraries(${PROJECT_NAME} PUBLIC hiberlite)
-target_compile_options(${PROJECT_NAME} PUBLIC "-Wno-terminate")
+add_executable(${PROJECT_NAME_TEST} ${SRC_FILES})
+target_link_libraries(${PROJECT_NAME_TEST} PRIVATE ${PROJECT_NAME} hiberlite)
+target_compile_options(${PROJECT_NAME_TEST} PUBLIC "-Wno-terminate")
 
 # Execute as test
 include(CTest)
-add_test(NAME Basic COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME})
+add_test(NAME Basic COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME_TEST})
