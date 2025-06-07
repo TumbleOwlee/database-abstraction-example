@@ -5,7 +5,7 @@
 
 #include <memory>
 
-namespace persistence {
+namespace dal {
 
 namespace interface {
 
@@ -56,7 +56,7 @@ namespace defaults {
 /**!
  * \brief Transaction handling for hiberlite backend
  */
-class Transaction final : public ::persistence::interface::Transaction {
+class Transaction final : public ::dal::interface::Transaction {
 public:
     /**!
      * \brief Create/Start new transaction
@@ -65,7 +65,7 @@ public:
      *
      * \return Interface handle to the transaction
      */
-    Transaction(std::shared_ptr<interface::Storage> storage) : ::persistence::interface::Transaction(storage) {
+    Transaction(std::shared_ptr<interface::Storage> storage) : ::dal::interface::Transaction(storage) {
         LOG() << "Create transaction" << std::endl;
         _storage->startTransaction();
     }
@@ -101,4 +101,4 @@ private:
 
 } // namespace defaults
 
-} // namespace persistence
+} // namespace dal

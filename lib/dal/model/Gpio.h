@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace persistence {
+namespace dal {
 
 namespace model {
 
@@ -16,4 +16,4 @@ public:
 
 } // namespace model
 
-} // namespace persistence
+} // namespace dal

@@ -4,16 +4,16 @@
 #include "LogStorage.h"
 #include "UserStorage.h"
 
-namespace persistence {
+namespace dal {
 
 namespace interface {
 
 /**!
  * \brief Interface combination of all sub-views
  */
-class Storage : virtual public ::persistence::interface::UserStorage,
-                virtual public ::persistence::interface::GpioStorage,
-                virtual public ::persistence::interface::LogStorage {
+class Storage : virtual public ::dal::interface::UserStorage,
+                virtual public ::dal::interface::GpioStorage,
+                virtual public ::dal::interface::LogStorage {
 public:
     /**!
      * \brief Destructor
@@ -27,4 +27,4 @@ public:
 
 } // namespace interface
 
-} // namespace persistence
+} // namespace dal

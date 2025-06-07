@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <string>
 
-namespace persistence {
+namespace dal {
 
 namespace model {
 
@@ -17,4 +17,4 @@ struct User {
 
 } // namespace model
 
-} // namespace persistence
+} // namespace dal

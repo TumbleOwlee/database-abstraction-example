@@ -2,16 +2,18 @@
 
 #include <hiberlite.h>
 
-#include "../interfaces/Key.h"
+#include "dal/interfaces/Key.h"
 
-namespace persistence {
+namespace dal {
+
+namespace drivers {
 
 namespace hiberlite {
 
 /**!
  * \brief Hiberlite object key definition
  */
-class Key : public ::persistence::interface::Key {
+class Key : public ::dal::interface::Key {
 public:
     /**!
      * \brief Creates a key represented by the hiberlite id
@@ -33,4 +35,6 @@ private:
 
 } // namespace hiberlite
 
-} // namespace persistence
+} // namespace drivers
+
+} // namespace dal

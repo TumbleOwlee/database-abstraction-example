@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace persistence {
+namespace dal {
 
 namespace common {
 
@@ -27,6 +27,7 @@ public:
     }
 };
 
+// NOLINTNEXTLINE
 auto assert(bool cmp) -> void {
     if (!cmp) {
         abort();
@@ -35,6 +36,6 @@ auto assert(bool cmp) -> void {
 
 } // namespace common
 
-} // namespace persistence
+} // namespace dal
 
-#define LOG() ::persistence::common::DebugLogWriter()
+#define LOG() ::dal::common::DebugLogWriter()

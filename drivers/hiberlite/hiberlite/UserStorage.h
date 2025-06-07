@@ -2,16 +2,18 @@
 
 #include "Key.h"
 
-#include "../interfaces/UserStorage.h"
-#include "../model/User.h"
+#include "dal/interfaces/UserStorage.h"
+#include "dal/model/User.h"
 
 #include <hiberdefs.h>
 #include <hiberlite.h>
 #include <iostream>
 
-#include "../common.h"
+#include "dal/common.h"
 
-namespace persistence {
+namespace dal {
+
+namespace drivers {
 
 namespace hiberlite {
 
@@ -22,7 +24,7 @@ namespace hiberlite {
  *         it by providing the necessary implementation of methods required
  *         by the underlying backend (hiberlite)
  */
-class User : public ::persistence::model::User {
+class User : public ::dal::model::User {
 private:
     friend class ::hiberlite::access;
 
@@ -39,7 +41,7 @@ public:
     /**!
      * \brief Consturctor
      */
-    User() : ::persistence::model::User() {}
+    User() : ::dal::model::User() {}
 
     /**!
      * \brief Consturctor
@@ -48,13 +50,13 @@ public:
      *
      * \param user The user as given by the model
      */
-    User(::persistence::model::User &&user) : ::persistence::model::User(user) {}
+    User(::dal::model::User &&user) : ::dal::model::User(user) {}
 };
 
 /**!
  * \brief UserStorage providing the user specific database operations
  */
-class UserStorage : virtual public ::persistence::interface::UserStorage {
+class UserStorage : virtual public ::dal::interface::UserStorage {
 public:
     /**!
      * \brief Create a user storage view
@@ -70,11 +72,11 @@ public:
      *
      * \return Key handle representing the stored user
      */
-    auto persist(::persistence::model::User &&user) -> std::shared_ptr<::persistence::interface::Key> override {
+    auto persist(::dal::model::User &&user) -> std::shared_ptr<::dal::interface::Key> override {
         LOG() << "Persisting user... ";
         auto bean = _database.copyBean(User(std::move(user)));
         LOG() << bean.get_id() << std::endl;
-        return std::make_shared<::persistence::hiberlite::Key>(bean.get_id());
+        return std::make_shared<::dal::drivers::hiberlite::Key>(bean.get_id());
     }
 
     /**!
@@ -86,15 +88,15 @@ public:
      *
      * \return The loaded user
      */
-    auto load(std::shared_ptr<::persistence::interface::Key> id) -> ::persistence::model::User override {
-        auto ptr = dynamic_cast<::persistence::hiberlite::Key *>(id.get());
+    auto load(std::shared_ptr<::dal::interface::Key> id) -> ::dal::model::User override {
+        auto ptr = dynamic_cast<::dal::drivers::hiberlite::Key *>(id.get());
         if (ptr == nullptr) {
             throw std::invalid_argument("Provided pointer isn't valid key.");
         }
         auto sqlid = ptr->get();
         LOG() << "Load user " << sqlid << "..." << std::endl;
         auto user = _database.loadBean<User>(sqlid);
-        return ::persistence::model::User(*user.get_object()->get());
+        return ::dal::model::User(*user.get_object()->get());
     }
 
 private:
@@ -103,7 +105,9 @@ private:
 
 } // namespace hiberlite
 
-} // namespace persistence
+} // namespace drivers
+
+} // namespace dal
 
 namespace hiberlite {
 
@@ -112,7 +116,7 @@ namespace hiberlite {
  */
 template <>
 // NOLINTNEXTLINE
-std::string Database::getClassName<persistence::hiberlite::User>() {
+std::string Database::getClassName<::dal::drivers::hiberlite::User>() {
     std::string temp("User");
     std::replace(temp.begin(), temp.end(), ':', '_');
     return temp;

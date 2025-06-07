@@ -6,7 +6,7 @@
 #include <functional>
 #include <memory>
 
-namespace persistence {
+namespace dal {
 
 class Database {
 public:
@@ -19,11 +19,11 @@ public:
      */
     template <class Storage, typename... Args>
     static auto create(Args... args) -> Database {
-        auto create = [](std::shared_ptr<::persistence::interface::Storage> storage)
-            -> std::unique_ptr<::persistence::interface::Transaction> {
+        auto create = [](std::shared_ptr<::dal::interface::Storage> storage)
+            -> std::unique_ptr<::dal::interface::Transaction> {
             return std::unique_ptr<typename Storage::Transaction>(new typename Storage::Transaction(storage));
         };
-        return Database(std::shared_ptr<::persistence::interface::Storage>(new Storage(args...)), create);
+        return Database(std::shared_ptr<::dal::interface::Storage>(new Storage(args...)), create);
     }
 
     /**!
@@ -31,7 +31,7 @@ public:
      *
      * \return Created transaction
      */
-    auto newTransaction() -> std::unique_ptr<::persistence::interface::Transaction> { return _create(_storage); }
+    auto newTransaction() -> std::unique_ptr<::dal::interface::Transaction> { return _create(_storage); }
 
     /**!
      * \brief Returns access interface to tables
@@ -44,11 +44,11 @@ public:
     }
 
 private:
-    using CreateFn = std::function<auto(std::shared_ptr<::persistence::interface::Storage>)
-                                       ->std::unique_ptr<::persistence::interface::Transaction>>;
+    using CreateFn = std::function<auto(std::shared_ptr<::dal::interface::Storage>)
+                                       ->std::unique_ptr<::dal::interface::Transaction>>;
 
     // Backend handle
-    std::shared_ptr<::persistence::interface::Storage> _storage;
+    std::shared_ptr<::dal::interface::Storage> _storage;
     // Function to create transaction
     CreateFn _create;
 
@@ -58,8 +58,8 @@ private:
      * \param storage  Backend handle
      * \param create   Custom function to create transaction
      */
-    Database(std::shared_ptr<::persistence::interface::Storage> storage, CreateFn create)
+    Database(std::shared_ptr<::dal::interface::Storage> storage, CreateFn create)
         : _storage(storage), _create(create) {}
 };
 
-} // namespace persistence
+} // namespace dal

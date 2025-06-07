@@ -6,7 +6,7 @@
 
 #include <memory>
 
-namespace persistence {
+namespace dal {
 
 namespace interface {
 
@@ -22,7 +22,7 @@ public:
      *
      * \return The key handle associated with the stored gpio
      */
-    virtual auto persist(::persistence::model::Gpio &&gpio) -> std::shared_ptr<::persistence::interface::Key> = 0;
+    virtual auto persist(::dal::model::Gpio &&gpio) -> std::shared_ptr<::dal::interface::Key> = 0;
 
     /**!
      * \brief Load a gpio by its key id
@@ -31,9 +31,9 @@ public:
      *
      * \return The gpio associated with the given id
      */
-    virtual auto load(std::shared_ptr<::persistence::interface::Key> id) -> ::persistence::model::Gpio = 0;
+    virtual auto load(std::shared_ptr<::dal::interface::Key> id) -> ::dal::model::Gpio = 0;
 };
 
 } // namespace interface
 
-} // namespace persistence
+} // namespace dal

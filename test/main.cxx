@@ -1,15 +1,15 @@
-#include "database/Database.h"
-#include "database/hiberlite/Storage.h"
+#include "dal/Database.h"
+#include "hiberlite/Storage.h"
 
-using namespace ::persistence;
-using namespace ::persistence::common;
-using namespace ::persistence::model;
-using namespace ::persistence::interface;
+using namespace ::dal;
+using namespace ::dal::common;
+using namespace ::dal::model;
+using namespace ::dal::interface;
 
 int main(int, char **) {
     std::cerr << ">> Running..." << std::endl;
 
-    Database database = Database::create<::persistence::hiberlite::Storage>("db.sqlite");
+    Database database = Database::create<::dal::drivers::hiberlite::Storage>("db.sqlite");
 
     /* Non-transaction persist */
     {

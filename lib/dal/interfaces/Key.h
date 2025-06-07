@@ -1,6 +1,6 @@
 #pragma once
 
-namespace persistence {
+namespace dal {
 
 namespace interface {
 
@@ -14,4 +14,4 @@ public:
 
 } // namespace interface
 
-} // namespace persistence
+} // namespace dal

@@ -2,16 +2,18 @@
 
 #include "Key.h"
 
-#include "../interfaces/LogStorage.h"
-#include "../model/Log.h"
+#include "dal/interfaces/LogStorage.h"
+#include "dal/model/Log.h"
 
 #include <hiberdefs.h>
 #include <hiberlite.h>
 #include <iostream>
 
-#include "../common.h"
+#include "dal/common.h"
 
-namespace persistence {
+namespace dal {
+
+namespace drivers {
 
 namespace hiberlite {
 
@@ -22,7 +24,7 @@ namespace hiberlite {
  *         it by providing the necessary implementation of methods required
  *         by the underlying backend (hiberlite)
  */
-class Log : public ::persistence::model::Log {
+class Log : public ::dal::model::Log {
 private:
     friend class ::hiberlite::access;
 
@@ -38,7 +40,7 @@ public:
     /**!
      * \brief Consturctor
      */
-    Log() : ::persistence::model::Log() {}
+    Log() : ::dal::model::Log() {}
 
     /**!
      * \brief Consturctor
@@ -47,13 +49,13 @@ public:
      *
      * \param log The log as given by the model
      */
-    Log(::persistence::model::Log &&log) : ::persistence::model::Log(log) {}
+    Log(::dal::model::Log &&log) : ::dal::model::Log(log) {}
 };
 
 /**!
  * \brief LogStorage providing the log specific database operations
  */
-class LogStorage : virtual public ::persistence::interface::LogStorage {
+class LogStorage : virtual public ::dal::interface::LogStorage {
 public:
     /**!
      * \brief Create a log storage view
@@ -69,11 +71,11 @@ public:
      *
      * \return Key handle representing the stored log
      */
-    auto persist(::persistence::model::Log &&log) -> std::shared_ptr<::persistence::interface::Key> override {
+    auto persist(::dal::model::Log &&log) -> std::shared_ptr<::dal::interface::Key> override {
         auto bean = _database.copyBean(Log(std::move(log)));
         LOG() << "Persisting log...";
         LOG() << bean.get_id() << std::endl;
-        return std::make_shared<::persistence::hiberlite::Key>(bean.get_id());
+        return std::make_shared<::dal::drivers::hiberlite::Key>(bean.get_id());
     }
 
     /**!
@@ -85,15 +87,15 @@ public:
      *
      * \return The loaded log
      */
-    auto load(std::shared_ptr<::persistence::interface::Key> id) -> ::persistence::model::Log override {
-        auto ptr = dynamic_cast<::persistence::hiberlite::Key *>(id.get());
+    auto load(std::shared_ptr<::dal::interface::Key> id) -> ::dal::model::Log override {
+        auto ptr = dynamic_cast<::dal::drivers::hiberlite::Key *>(id.get());
         if (ptr == nullptr) {
             throw std::invalid_argument("Provided pointer isn't valid key.");
         }
         auto sqlid = ptr->get();
         LOG() << "Load log " << sqlid << "..." << std::endl;
         auto log = _database.loadBean<Log>(sqlid);
-        return ::persistence::model::Log(*log.get_object()->get());
+        return ::dal::model::Log(*log.get_object()->get());
     }
 
 private:
@@ -102,7 +104,9 @@ private:
 
 } // namespace hiberlite
 
-} // namespace persistence
+} // namespace drivers
+
+} // namespace dal
 
 namespace hiberlite {
 
@@ -111,7 +115,7 @@ namespace hiberlite {
  */
 template <>
 // NOLINTNEXTLINE
-std::string Database::getClassName<persistence::hiberlite::Log>() {
+std::string Database::getClassName<::dal::drivers::hiberlite::Log>() {
     std::string temp("Log");
     std::replace(temp.begin(), temp.end(), ':', '_');
     return temp;

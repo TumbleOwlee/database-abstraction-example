@@ -1,16 +1,18 @@
 #pragma once
 
-#include "../interfaces/GpioStorage.h"
-#include "../interfaces/Key.h"
-#include "../model/Gpio.h"
+#include "dal/common.h"
+#include "dal/interfaces/GpioStorage.h"
+#include "dal/interfaces/Key.h"
+#include "dal/model/Gpio.h"
 
 #include <hiberlite.h>
 #include <iostream>
 
-#include "../common.h"
-#include "database/hiberlite/Key.h"
+#include "Key.h"
 
-namespace persistence {
+namespace dal {
+
+namespace drivers {
 
 namespace hiberlite {
 
@@ -21,7 +23,7 @@ namespace hiberlite {
  *         it by providing the necessary implementation of methods required
  *         by the underlying backend (hiberlite)
  */
-class Gpio : public ::persistence::model::Gpio {
+class Gpio : public ::dal::model::Gpio {
 private:
     friend class ::hiberlite::access;
 
@@ -37,7 +39,7 @@ public:
     /**!
      * \brief Consturctor
      */
-    Gpio() : ::persistence::model::Gpio() {}
+    Gpio() : ::dal::model::Gpio() {}
 
     /**!
      * \brief Consturctor
@@ -46,13 +48,13 @@ public:
      *
      * \param gpio The gpio as given by the model
      */
-    Gpio(::persistence::model::Gpio &&gpio) : ::persistence::model::Gpio(gpio) {}
+    Gpio(::dal::model::Gpio &&gpio) : ::dal::model::Gpio(gpio) {}
 };
 
 /**!
  * \brief GpioStorage providing the gpio specific database operations
  */
-class GpioStorage : virtual public ::persistence::interface::GpioStorage {
+class GpioStorage : virtual public ::dal::interface::GpioStorage {
 public:
     /**!
      * \brief Create a gpio storage view
@@ -68,11 +70,11 @@ public:
      *
      * \return Key handle representing the stored gpio
      */
-    auto persist(::persistence::model::Gpio &&gpio) -> std::shared_ptr<::persistence::interface::Key> override {
+    auto persist(::dal::model::Gpio &&gpio) -> std::shared_ptr<::dal::interface::Key> override {
         LOG() << "Persisting gpio... ";
         auto bean = _database.copyBean(Gpio(std::move(gpio)));
         LOG() << bean.get_id() << std::endl;
-        return std::make_shared<::persistence::hiberlite::Key>(bean.get_id());
+        return std::make_shared<::dal::drivers::hiberlite::Key>(bean.get_id());
     }
 
     /**!
@@ -84,15 +86,15 @@ public:
      *
      * \return The loaded gpio
      */
-    auto load(std::shared_ptr<::persistence::interface::Key> id) -> ::persistence::model::Gpio override {
-        auto ptr = dynamic_cast<::persistence::hiberlite::Key *>(id.get());
+    auto load(std::shared_ptr<::dal::interface::Key> id) -> ::dal::model::Gpio override {
+        auto ptr = dynamic_cast<::dal::drivers::hiberlite::Key *>(id.get());
         if (ptr == nullptr) {
             throw std::invalid_argument("Provided pointer isn't valid key.");
         }
         auto sqlid = ptr->get();
         LOG() << "Load gpio " << sqlid << "..." << std::endl;
         auto gpio = _database.loadBean<Gpio>(sqlid);
-        return ::persistence::model::Gpio(*gpio.get_object()->get());
+        return ::dal::model::Gpio(*gpio.get_object()->get());
     }
 
 private:
@@ -101,7 +103,9 @@ private:
 
 } // namespace hiberlite
 
-} // namespace persistence
+} // namespace drivers
+
+} // namespace dal
 
 namespace hiberlite {
 
@@ -110,7 +114,7 @@ namespace hiberlite {
  */
 template <>
 // NOLINTNEXTLINE
-std::string Database::getClassName<persistence::hiberlite::Gpio>() {
+std::string Database::getClassName<dal::drivers::hiberlite::Gpio>() {
     std::string temp("Gpio");
     std::replace(temp.begin(), temp.end(), ':', '_');
     return temp;
