@@ -26,6 +26,7 @@ endif()
 
 # Add external dependencies
 add_subdirectory("deps/hiberlite")
+add_subdirectory("deps/json")
 
 # Set up library
 add_library(${PROJECT_NAME} INTERFACE)
@@ -39,11 +40,22 @@ add_library(${PROJECT_NAME_HIBERLITE} INTERFACE)
 target_include_directories(${PROJECT_NAME_HIBERLITE} INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}/drivers/hiberlite
     ${CMAKE_CURRENT_SOURCE_DIR}/deps/hiberlite/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib
 )
 target_link_libraries(${PROJECT_NAME_HIBERLITE} INTERFACE ${PROJECT_NAME})
 
+# Set up json driver
+set(PROJECT_NAME_JSON "${PROJECT_NAME}-json")
+add_library(${PROJECT_NAME_JSON} INTERFACE)
+target_include_directories(${PROJECT_NAME_JSON} INTERFACE
+    ${CMAKE_CURRENT_SOURCE_DIR}/drivers/json
+    ${CMAKE_CURRENT_SOURCE_DIR}/deps/json/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib
+)
+target_link_libraries(${PROJECT_NAME_JSON} INTERFACE ${PROJECT_NAME})
+
 # Collect all source files
-set (SRC_FILES "test/main.cxx")
+set (SRC_FILES "test/hiberlite.cxx")
 set (PROJECT_NAME_TEST "${PROJECT_NAME}-test")
 
 # Create executable
@@ -53,4 +65,17 @@ target_compile_options(${PROJECT_NAME_TEST} PUBLIC "-Wno-terminate")
 
 # Execute as test
 include(CTest)
-add_test(NAME Basic COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME_TEST})
+add_test(NAME hiberlite COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME_TEST})
+
+# Collect all source files
+set (SRC_FILES "test/json.cxx")
+set (PROJECT_NAME_JSON_TEST "${PROJECT_NAME}-json-test")
+
+# Create executable
+add_executable(${PROJECT_NAME_JSON_TEST} ${SRC_FILES})
+target_link_libraries(${PROJECT_NAME_JSON_TEST} PRIVATE ${PROJECT_NAME_JSON} nlohmann_json)
+target_compile_options(${PROJECT_NAME_JSON_TEST} PUBLIC "-Wno-terminate")
+
+# Execute as test
+include(CTest)
+add_test(NAME json COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME_JSON_TEST})

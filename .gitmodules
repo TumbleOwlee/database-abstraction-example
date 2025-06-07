@@ -1,3 +1,6 @@
 [submodule "deps/hiberlite"]
 	path = deps/hiberlite
 	url = https://github.com/TumbleOwlee/hiberlite
+[submodule "deps/json"]
+	path = deps/json
+	url = https://github.com/nlohmann/json
