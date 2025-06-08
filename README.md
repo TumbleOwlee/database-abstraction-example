@@ -1,4 +1,4 @@
-# Database Abstraction Layer
+# DAL - Database Abstraction Layer
 
 [![CMake on Unix](https://github.com/TumbleOwlee/database-abstraction-example/actions/workflows/cmake-single-platform.yml/badge.svg)](https://github.com/TumbleOwlee/database-abstraction-example/actions/workflows/cmake-single-platform.yml)
 
